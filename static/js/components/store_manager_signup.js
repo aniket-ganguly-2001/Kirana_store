@@ -79,7 +79,7 @@ const StoreManagerSignup = {
           const data = await res.json()
           if (res.ok) {
             alert('Account created succesfully! Please wait for the administrator to approve your account!')
-            return this.$router.push('/user_login')
+            return this.$router.push('/customer_login')
           } else {
             alert(data.message)
           }
