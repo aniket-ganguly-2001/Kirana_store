@@ -1,6 +1,8 @@
 import Home from "./components/homepage.js";
 import StoreManagerLogin from "./components/store_manager_login.js";
 import CustomerLogin from "./components/customer_login.js";
+import CustomerDashboard from "./components/customer_dashboard.js"
+import CustomerCart from "./components/customer_cart.js"
 import Signup from "./components/signup.js";
 import StoreManagerSignup from "./components/store_manager_signup.js";
 import StoreManagerDashboard from "./components/store_manager_dashboard.js"
@@ -16,6 +18,8 @@ const router=new VueRouter({
         {path: '/store_manager_login', component: StoreManagerLogin},
         {path: '/store_manager_dashboard', component: StoreManagerDashboard},
         {path: '/customer_login', component: CustomerLogin},
+        {path: '/customer_dashboard', component: CustomerDashboard},
+        {path: '/customer_cart', component: CustomerCart},
         {path: '/signup', component: Signup}
     ]
 })
