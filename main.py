@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, jsonify, render_template
 from flask_cors import CORS
 from flask_restful import Api
 from flask_security import Security, SQLAlchemyUserDatastore, utils
-from flask_login import LoginManager
+from flask_login import LoginManager, login_required, logout_user, current_user
 from config import LocalDevelopmentConfig
 from models import *
 from api import *
@@ -20,7 +20,7 @@ login_manager = LoginManager(app)
 
 api = Api(app)
 
-api.add_resource(UserApi,'/api/user', '/api/user/<string:email>/<string:password>')
+api.add_resource(UserApi, '/api/user/','/api/user/<string:email>/<string:password>')
 api.add_resource(ManagerQueueApi, '/api/queue')
 
 def create_app():
@@ -78,6 +78,12 @@ def signin(username, password):
 @login_manager.unauthorized_handler
 def unauthorized_callback():
     return redirect('/')
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return jsonify('Logged out'), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

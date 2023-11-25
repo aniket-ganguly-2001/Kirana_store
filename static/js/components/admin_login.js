@@ -51,7 +51,7 @@ const AdminLogin = {
           const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer)
           const hashArray = Array.from(new Uint8Array(hashBuffer))
           const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('')
-          const get_tuple = await fetch(('/api/admin/' + this.formData.email + '/' + hashHex), {
+          const get_tuple = await fetch(('/api/user/' + this.formData.email + '/' + hashHex), {
             method: "get",
             headers: { "Content-Type": "application/json" },
           })
@@ -60,6 +60,7 @@ const AdminLogin = {
               localStorage.setItem('email', this.formData.email);
               localStorage.setItem('hash_password', hashHex);
               localStorage.setItem('name', tuple.name)
+              localStorage.setItem('login', true)
               return this.$router.push('/admin_dashboard')
           } else {
             alert("Incorrect login credentials!")

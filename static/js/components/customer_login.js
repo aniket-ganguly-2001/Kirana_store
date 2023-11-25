@@ -57,18 +57,13 @@ const CustomerLogin = {
         })
         if (get_tuple.status != 404) {
           const tuple = await get_tuple.json()
-          if (tuple.role == "user") {
             localStorage.setItem('email', this.formData.email);
             localStorage.setItem('hash_password', hashHex);
             localStorage.setItem('login', true);
             localStorage.setItem('user_id', tuple.user_id)
             localStorage.setItem('name', tuple.name)
             localStorage.setItem('role', 'user')
-            return this.$router.push('/user_dashboard')
-          } else {
-            console.log(tuple)
-            alert("Access denied!")
-          }
+            return this.$router.push('/customer_dashboard')
         } else {
           alert("Incorrect login credentials!")
         }

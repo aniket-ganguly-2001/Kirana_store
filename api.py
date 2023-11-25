@@ -1,9 +1,8 @@
 import hashlib
 from flask import request
 from flask_restful import Resource, fields, marshal_with
-
+from models import db, User, Queue
 from errors import NotFoundError, ValidationError
-from models import *
 
 class UserApi(Resource):
     output = {"user_id": fields.Integer, "name": fields.String, "email": fields.String,
@@ -13,8 +12,8 @@ class UserApi(Resource):
     def get(self, email: str, password: str):
         obj = User.query.filter_by(email=email, password=password).first()
 
-        if obj is None:
-            raise NotFoundError(status_code=404)
+        if not obj:
+            raise NotFoundError(404)
 
         obj.active = True
         db.session.commit()
@@ -22,24 +21,24 @@ class UserApi(Resource):
 
     @marshal_with(output)
     def put(self, email: str):
-
         obj = User.query.filter_by(email=email).first()
 
-        if obj is None:
+        if not obj:
             raise NotFoundError(status_code=404)
 
-        obj.password = request.get_json().get("password")
+        password_data = request.get_json().get("password")
 
-        if obj.password is None or type(obj.password) != str or len(obj.password) == 0:
+        if not isinstance(password_data, str) or len(password_data) == 0:
             raise ValidationError(status_code=400, error_code="USER002",
                                   error_msg="Invalid password!")
+
+        obj.password = hashlib.sha256(password_data.encode('utf-8')).hexdigest()
 
         db.session.commit()
         return obj, 202
 
     def delete(self, email: str):
-
-        obj = User.query.filter_by(email=email).first()
+        obj = User.query.first()
 
         if not obj:
             raise NotFoundError(status_code=404)
@@ -50,21 +49,20 @@ class UserApi(Resource):
 
     @marshal_with(output)
     def post(self):
-
         form = request.get_json()
 
         obj = User(name=form.get("name"), email=form.get("email"),
                    password=hashlib.sha256(form.get("password").encode('utf-8')).hexdigest())
 
-        if obj.name is None or type(obj.name) != str or len(obj.name) == 0:
+        if not isinstance(obj.name, str) or len(obj.name) == 0:
             raise ValidationError(
                 status_code=400, error_code="USER001", error_msg="Invalid name!")
 
-        if obj.email is None or type(obj.email) != str or len(obj.email) == 0:
+        if not isinstance(obj.email, str) or len(obj.email) == 0:
             raise ValidationError(
                 status_code=400, error_code="USER002", error_msg="Invalid email!")
 
-        if obj.password is None or type(obj.password) != str or len(obj.password) == 0:
+        if not isinstance(obj.password, str) or len(obj.password) == 0:
             raise ValidationError(
                 status_code=400, error_code="USER003", error_msg="Invalid password!")
 
@@ -76,34 +74,33 @@ class UserApi(Resource):
         db.session.commit()
         return obj, 201
 
-
 class ManagerQueueApi(Resource):
-
     output = {"sl_no": fields.Integer, "name": fields.String, "email": fields.String,
               "password": fields.String}
-    
+
     @marshal_with(output)
-    def get(self, sl_no: int):
-        obj = Queue.query.filter_by(sl_no=sl_no).first()
+    def get(self):
+        obj = Queue.query.first()
+        if not obj:
+            raise NotFoundError(status_code=404)
         return obj, 200
-    
+
     @marshal_with(output)
     def post(self):
-
         form = request.get_json()
 
         obj = Queue(name=form.get("name"), email=form.get("email"),
-                   password=hashlib.sha256(form.get("password").encode('utf-8')).hexdigest())
+                    password=hashlib.sha256(form.get("password").encode('utf-8')).hexdigest())
 
-        if obj.name is None or type(obj.name) != str or len(obj.name) == 0:
+        if not isinstance(obj.name, str) or len(obj.name) == 0:
             raise ValidationError(
                 status_code=400, error_code="QUEUE001", error_msg="Invalid name!")
 
-        if obj.email is None or type(obj.email) != str or len(obj.email) == 0:
+        if not isinstance(obj.email, str) or len(obj.email) == 0:
             raise ValidationError(
                 status_code=400, error_code="QUEUE002", error_msg="Invalid email!")
 
-        if obj.password is None:
+        if not obj.password:
             raise ValidationError(
                 status_code=400, error_code="QUEUE003", error_msg="Invalid password!")
 
@@ -116,9 +113,11 @@ class ManagerQueueApi(Resource):
         return obj, 201
 
     @marshal_with(output)
-    def delete(self, sl_no: int):
-        obj = Queue.query.filter_by(sl_no=sl_no).first()
-        db.session.delete(obj)
-        db.session.commit()
+    def delete(self):
+        obj = Queue.query.first()
+
+        if obj:
+            db.session.delete(obj)
+            db.session.commit()
+
         return '', 200
-    
