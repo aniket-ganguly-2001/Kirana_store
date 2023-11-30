@@ -6,11 +6,11 @@ from werkzeug.exceptions import HTTPException
 
 class NotFoundError(HTTPException):
     def __init__(self, status_code):
-        self.response = make_response('', status_code=404)
+        self.response = make_response('', status_code)
 
 class AccessError(HTTPException):
-    def __init__(self):
-        self.response = make_response('', status_code=401)
+    def __init__(self, status_code):
+        self.response = make_response('', status_code)
 
 class ValidationError(HTTPException):
     def __init__(self, status_code, error_code, error_msg):

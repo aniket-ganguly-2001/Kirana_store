@@ -11,27 +11,34 @@ const AdminDashboard = {
                 </div>
             </div>
         </nav>
-        <div v-if="managerData.length === 0">
-            <h1><em>No managers found in the queue</em></h1>
+        <div>
+    <div v-if="managerData.length === 0">
+        <h1><em>No managers found in the queue</em></h1>
+    </div>
+    <div v-else class="row row-text-center">
+        <div class="col-sm-3 mb-2 mb-sm-0" v-for="manager in managerData" :key="manager.sl_no">
+            <div class="card w-75 mb-3" style="width: 18rem;">
+                <div class="card-header">
+                    <h3 class="card-title text-center"><strong>{{ manager.name }}</strong></h3>
+                </div>
+                <div class="card-body">
+                    <p>Email: {{ manager.email }}</p>
+                    <button class="btn btn-info btn-sm" @click.prevent="approve(manager)">
+                        Approve <i class="bi bi-patch-check-fill"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-        <div v-else class="row row-text-center">
-            <div class="col-sm-3 mb-2 mb-sm-0" v-for="manager in managerData" :key="manager.sl_no">
-                <div class="card w-75 mb-3" style="width: 18rem;">
-                    <div class="card-header">
-                        <h3 class="card-title text-center"><strong>{{ manager.name }}</strong></h3>
-                    </div>
-                    <div class="card-body">
-                        <p>Email: {{ manager.email }}</p>
-                        <p class="text-center btn btn-info btn-sm"  @click.prevent="approve(manager.sl_no)">Approve<i class="bi bi-patch-check-fill"></i></p>
-                    </div>
-                </div><br>
+    </div>
+</div>
+
             </div>
         </div>    
     </div>`,
 
     data() {
         return {
-            managerData: [{}],
+            managerData: [{sl_no: null, name: null, email: null, password: null}, ],
         };
     },
     methods: {

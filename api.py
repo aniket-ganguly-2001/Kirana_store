@@ -41,8 +41,8 @@ class UserApi(Resource):
         obj = User.query.first()
 
         if not obj:
-            raise NotFoundError(status_code=404)
-
+            raise NotFoundError()
+        
         db.session.delete(obj)
         db.session.commit()
         return '', 200
@@ -80,7 +80,7 @@ class ManagerQueueApi(Resource):
 
     @marshal_with(output)
     def get(self):
-        obj = Queue.query.first()
+        obj = Queue.query.all()
         if not obj:
             raise NotFoundError(status_code=404)
         return obj, 200
