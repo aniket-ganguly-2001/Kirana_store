@@ -38,7 +38,7 @@ const AdminDashboard = {
 
     data() {
         return {
-            managerData: [{sl_no: null, name: null, email: null, password: null}, ],
+            managerData: [],
         };
     },
     methods: {
