@@ -21,7 +21,7 @@ login_manager = LoginManager(app)
 api = Api(app)
 
 api.add_resource(UserApi, '/api/user/','/api/user/<string:email>/<string:password>')
-api.add_resource(ManagerQueueApi, '/api/queue')
+api.add_resource(ManagerQueueApi, '/api/queue', '/api/queue/<int:sl_no>')
 
 def create_app():
     with app.app_context():

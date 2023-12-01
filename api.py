@@ -50,6 +50,7 @@ class UserApi(Resource):
     @marshal_with(output)
     def post(self):
         form = request.get_json()
+        print(form)
 
         obj = User(name=form.get("name"), email=form.get("email"),
                    password=hashlib.sha256(form.get("password").encode('utf-8')).hexdigest())
@@ -78,16 +79,24 @@ class ManagerQueueApi(Resource):
     output = {"sl_no": fields.Integer, "name": fields.String, "email": fields.String,
               "password": fields.String}
 
+    
     @marshal_with(output)
-    def get(self):
-        obj = Queue.query.all()
+    def get(self, sl_no:int=None):
+        if not sl_no:
+            obj = Queue.query.all()
+        else:
+            obj = Queue.query.filter_by(sl_no=sl_no).first()
+        
         if not obj:
             raise NotFoundError(status_code=404)
+        
         return obj, 200
 
     @marshal_with(output)
     def post(self):
         form = request.get_json()
+        
+        print(form)
 
         obj = Queue(name=form.get("name"), email=form.get("email"),
                     password=hashlib.sha256(form.get("password").encode('utf-8')).hexdigest())

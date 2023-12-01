@@ -23,7 +23,7 @@ const AdminDashboard = {
                 </div>
                 <div class="card-body">
                     <p>Email: {{ manager.email }}</p>
-                    <button class="btn btn-info btn-sm" @click.prevent="approve(manager)">
+                    <button class="btn btn-info btn-sm" @click.prevent="approve(manager.sl_no)">
                         Approve <i class="bi bi-patch-check-fill"></i>
                     </button>
                 </div>
@@ -61,7 +61,7 @@ const AdminDashboard = {
         },
         async approve(sl_no) {
             try {
-                const res = await fetch(`/api/queue`, {
+                const res = await fetch(`/api/queue/${sl_no}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                 });
