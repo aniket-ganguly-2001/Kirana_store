@@ -3,6 +3,7 @@ from flask import request
 from flask_restful import Resource, fields, marshal_with
 from models import db, User, Queue
 from errors import NotFoundError, ValidationError
+from mail_config import send_email
 
 class UserApi(Resource):
     output = {"user_id": fields.Integer, "name": fields.String, "email": fields.String,
@@ -126,6 +127,7 @@ class ManagerQueueApi(Resource):
         obj = Queue.query.first()
 
         if obj:
+            send_email(obj.email, "Approval to join as a manager", "Congratulations! The site administrator has approved your request to join Kirana Store as a store manager!")
             db.session.delete(obj)
             db.session.commit()
 
