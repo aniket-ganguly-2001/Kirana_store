@@ -80,6 +80,7 @@ const AdminDashboard = {
                             method: "DELETE",
                             headers: { "Content-Type": "application/json" },
                         });
+                        location.window.reload()
                     } else {
                         alert("Error during user creation!");
                     }
