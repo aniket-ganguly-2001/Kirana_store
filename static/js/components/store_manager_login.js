@@ -24,7 +24,7 @@ const StoreManagerLogin = {
                           <input v-model="formData.password" autocomplete="current-password" id="password" type="password"
                               class="form__input" placeholder="Password" required>
                       </div>
-                      <button type="submit" @click.prevent='adminLogin'
+                      <button type="submit" @click.prevent='login'
                           class="btn btn-dark btn-lg pb-3 mt-2">Submit</button>
                   </form>
                   <p class="text-center"><router-link to="/"><i class="bi bi-arrow-left"></i> Go back</router-link>
@@ -46,7 +46,7 @@ const StoreManagerLogin = {
   },
 
   methods: {
-    async adminLogin() {
+    async login() {
       if (this.check()) {
         const dataBuffer = new TextEncoder('utf-8').encode(document.getElementById("password").value)
         const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer)
@@ -58,18 +58,12 @@ const StoreManagerLogin = {
         })
         if (get_tuple.status != 404) {
           const tuple = await get_tuple.json()
-          console.log(tuple)
-          if (tuple.role == "admin") {
             localStorage.setItem('email', this.formData.email);
             localStorage.setItem('hash_password', hashHex);
             localStorage.setItem('login', true);
             localStorage.setItem('user_id', tuple.user_id)
-            localStorage.setItem('admin_name', tuple.name)
-            localStorage.setItem('role', 'admin')
-            return this.$router.push('/admin_dashboard')
-          } else {
-            alert("Access denied!")
-          }
+            localStorage.setItem('store_manager', tuple.name)
+            return this.$router.push('/store_manager_dashboard')
         } else {
           alert("Incorrect login credentials!")
         }

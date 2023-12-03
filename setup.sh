@@ -14,9 +14,6 @@ echo "Enabling environment and installing necessary libraries..."
 . .env/bin/activate;
 pip install --upgrade -r requirements.txt
 python main.py
-# echo "Starting redis-server..."
-# redis-server
-# echo "Creating celery workers..."
 # celery -A celery_task.celery worker -l info -B
 echo "Deactivating environment..."
 deactivate

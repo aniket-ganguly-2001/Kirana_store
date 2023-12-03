@@ -22,6 +22,8 @@ api = Api(app)
 
 api.add_resource(UserApi, '/api/user/','/api/user/<string:email>/<string:password>')
 api.add_resource(ManagerQueueApi, '/api/queue', '/api/queue/<int:sl_no>')
+api.add_resource(CategoryApi, '/api/category', '/api/category/<int:category_id>')
+api.add_resource(ItemApi, '/api/item', '/api/item/<int:item_id>')
 
 def create_app():
     with app.app_context():
@@ -49,9 +51,7 @@ def create_app():
 
             db.session.commit()
             print("Database tables created!")
-        else:
-            print("Database tables already exist")
-
+            
 create_app()
 
 @app.route('/')
