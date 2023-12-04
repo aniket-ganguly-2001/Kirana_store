@@ -236,3 +236,7 @@ p {
 	text-align: center;
 	font-size: 15px;
 }
+
+.form-floating>.form-control, .form-floating>.form-control-plaintext {
+    padding-bottom: 0 !important;
+}
