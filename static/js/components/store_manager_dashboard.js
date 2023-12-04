@@ -86,7 +86,7 @@ const StoreManagerDashboard = {
       store_manager: localStorage.getItem('store_manager'),
       hasCat: false,
       hasItem: false,
-      catName: "",  // Added this line
+      catName: "",
       catData: [],
       res_item: {}
     }
@@ -114,21 +114,18 @@ const StoreManagerDashboard = {
         const res = await fetch('/api/category', {
           method: "post",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            catName: this.catName,  // Updated this line
-            quantity: document.getElementById("quantity").value,
-            price: document.getElementById("price").value
-          })
-        })
-        if (res.status != 409) {
-          const data = await res.json()
+          body: JSON.stringify({ cat_name: this.catName }) // Use this.catName instead of document.getElementById("cat_name")
+        });
+    
+        if (res.status !== 409) {
+          const data = await res.json();
           if (res.ok) {
-            location.reload()
+            location.reload();
           } else {
-            alert(data.message)
+            alert(data.message);
           }
         } else {
-          alert('Category already exists!')
+          alert('Category already exists!');
         }
       }
     },
@@ -149,7 +146,7 @@ const StoreManagerDashboard = {
     },
     async deleteItem(item_id) {
       if (confirm("Are you sure you want to delete? This action cannot be undone.")) {
-        const res = await fetch('/api/show/' + item_id, {
+        const res = await fetch('/api/item/' + item_id, {
           method: "delete",
           headers: { "Content-Type": "application/json" }
         })
@@ -163,45 +160,45 @@ const StoreManagerDashboard = {
       }
     },
     check() {
-      if (this.catName.length == 0) {  // Updated this line
+      if (this.catName.length == 0) { 
         alert('Category Name is required!');
         return false;
       }
-      if (document.getElementById("quantity").value <= 0) {
-        alert('Invalid quantity!');
-        return false;
-      }
-      if (document.getElementById("price").value <= 0) {
-        alert('Invalid price!');
-        return false;
-      }
-      return true;
     },
     exportCat(category_id) {
       fetch('/exportCat/' + category_id, { method: 'get' })
       alert("Please check your registered email id for the document!");
     }
   },
-  async beforeCreate() {
+  async created() { // Use async with created
     if (localStorage.getItem('login') === null) {
-      return this.$router.push('/store_manager_login')
+      return this.$router.push('/store_manager_login');
     }
-    store_manager = this.localStorage.getItem('store_manager')
-    const res_cat = await fetch('/api/category', {
-      method: "get",
-      headers: { "Content-Type": "application/json" }
-    })
-    const data_cat = await res_cat.json()
-    if (res_cat.ok && data_cat.length != 0) {
-      this.hasCat = true;
-      this.catData = data_cat;
-    }
-    const temp = await (await fetch('/api/item')).json()
-    for (const i of data_cat) {
-      this.res_item[i.cat_id] = temp.filter(x => x.category_id == i.cat_id);
-    }
-    if (Object.keys(this.res_item).length != 0) {  // Updated this line
-      this.hasItem = true
+
+    try {
+      const res_cat = await fetch('/api/category', {
+        method: "get",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (res_cat.ok) {
+        const data_cat = await res_cat.json();
+        if (data_cat.length !== 0) {
+          this.hasCat = true;
+          this.catData = data_cat;
+        }
+        const temp = await (await fetch('/api/item')).json();
+        for (const i of data_cat) {
+          this.res_item[i.cat_id] = temp.filter(x => x.category_id === i.cat_id);
+        }
+        if (Object.keys(this.res_item).length !== 0) {
+          this.hasItem = true;
+        }
+      } else {
+        console.error('Failed to fetch categories:', res_cat.status);
+      }
+    } catch (error) {
+      console.error('Error during category fetch:', error);
     }
   }
 }
