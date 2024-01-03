@@ -13,7 +13,6 @@ echo "Enabling environment and installing necessary libraries..."
 . .env/bin/activate;
 pip install --upgrade -r requirements.txt
 python main.py
-# celery -A celery_task.celery worker -l info -B
 echo "Deactivating environment..."
 deactivate
 echo "Removing environment..."
